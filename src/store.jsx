@@ -4,6 +4,8 @@ const initialState = {
   loanPurpose: "",
 };
 
+
+
 function reducer(state = initialState, action) {
   switch (action.type) {
     case "account/deposit":
@@ -15,6 +17,13 @@ function reducer(state = initialState, action) {
         return {
             ...state,
             balance: state.balance - action.payload,
+        }
+    // LATER
+    case "account/requestLoan":
+        if(state.loan > 0) return state
+        return {
+            ...state,
+            loan: action.payload,
         }
   }
 }
