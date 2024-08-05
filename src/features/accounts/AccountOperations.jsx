@@ -9,31 +9,31 @@ function AccountOperations() {
   const [loanPurpose, setLoanPurpose] = useState("");
   const [currency, setCurrency] = useState("USD");
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const account = useSelector((store) => store.account);
 
   function handleDeposit() {
-    if(!depositAmount) return
+    if (!depositAmount) return;
     dispatch(deposit(depositAmount, currency));
-    setDepositAmount("")
+    setDepositAmount("");
   }
 
   function handleWithdrawal() {
-    if(!withdrawalAmount) return
-    dispatch(withdraw(withdrawalAmount))
-    setWithdrawalAmount("")
+    if (!withdrawalAmount) return;
+    dispatch(withdraw(withdrawalAmount));
+    setWithdrawalAmount("");
   }
 
   function handleRequestLoan() {
-    if(!loanAmount || !loanPurpose) return
-    dispatch(requestLoan(loanAmount, loanPurpose))
-    setLoanAmount("")
-    setLoanPurpose("")
+    if (!loanAmount || !loanPurpose) return;
+    dispatch(requestLoan(loanAmount, loanPurpose));
+    setLoanAmount("");
+    setLoanPurpose("");
   }
 
   function handlePayLoan() {
-    if(account.balance < account.loan || account.loan <= 0) return
-    dispatch(payLoan())
+    if (account.balance < account.loan || account.loan <= 0) return;
+    dispatch(payLoan());
   }
 
   return (
@@ -45,6 +45,7 @@ function AccountOperations() {
           <input
             type="number"
             value={depositAmount}
+            step={2}
             onChange={(e) => setDepositAmount(+e.target.value)}
           />
           <select
@@ -56,7 +57,9 @@ function AccountOperations() {
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={handleDeposit}>Deposit {depositAmount}</button>
+          <button onClick={handleDeposit}>
+            {account.isLoading ? "Converting..." : `Deposit ${depositAmount}`}
+          </button>
         </div>
 
         <div>
@@ -64,6 +67,7 @@ function AccountOperations() {
           <input
             type="number"
             value={withdrawalAmount}
+            step={2}
             onChange={(e) => setWithdrawalAmount(+e.target.value)}
           />
           <button onClick={handleWithdrawal}>
