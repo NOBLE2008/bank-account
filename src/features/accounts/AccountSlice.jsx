@@ -16,6 +16,7 @@ const accountSlice = createSlice({
       state.isLoading = false;
     },
     withdraw(state, action) {
+      if (action.payload > state.balance) return;
       state.balance -= action.payload;
     },
     requestLoan: {
@@ -29,13 +30,16 @@ const accountSlice = createSlice({
         state.isLoading = false;
       },
     },
-    payLoan(state, action){
-      if(state.balance < state.loan) return
-      state.balance -= state.loan
-      state.loan = 0
-      state.loanPurpose = ""
-      state.isLoading = false
-    }
+    payLoan(state, action) {
+      if (state.balance < state.loan) return;
+      state.balance -= state.loan;
+      state.loan = 0;
+      state.loanPurpose = "";
+      state.isLoading = false;
+    },
+    convertingCurrency(state, action) {
+      state.isLoading = true;
+    },
   },
 });
 // export default function accountReducer(state = initialStateAccount, action) {
@@ -77,19 +81,6 @@ const accountSlice = createSlice({
 //   }
 // }
 
-// export function deposit(amount, currency) {
-//   if (currency === "USD") return { type: "account/deposit", payload: amount };
-
-//   return async function (dispatch, getState) {
-//     dispatch({ type: "account/convertingCurrency" });
-//     const res = await fetch(
-//       `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
-//     );
-//     const data = await res.json();
-//     dispatch({ type: "account/deposit", payload: data.rates.USD });
-//   };
-// }
-
 // export function withdraw(amount) {
 //   return { type: "account/withdraw", payload: amount };
 // }
@@ -109,3 +100,20 @@ const accountSlice = createSlice({
 //     type: "account/payLoan",
 //   };
 // }
+
+export function deposit(amount, currency) {
+  if (currency === "USD") return { type: "account/deposit", payload: amount };
+
+  return async function (dispatch, getState) {
+    dispatch({ type: "account/convertingCurrency" });
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await res.json();
+    dispatch({ type: "account/deposit", payload: data.rates.USD });
+  };
+}
+
+export default accountSlice.reducer;
+
+export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
