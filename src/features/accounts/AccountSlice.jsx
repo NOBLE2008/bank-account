@@ -11,7 +11,10 @@ const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    
+    deposit(state, action){
+      state.balance += action.payload
+      state.isLoading = false
+    }
   }
 })
 // export default function accountReducer(state = initialStateAccount, action) {
