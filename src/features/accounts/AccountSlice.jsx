@@ -11,12 +11,26 @@ const accountSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    deposit(state, action){
-      state.balance += action.payload
-      state.isLoading = false
-    }
-  }
-})
+    deposit(state, action) {
+      state.balance += action.payload;
+      state.isLoading = false;
+    },
+    withdraw(state, action) {
+      state.balance -= action.payload;
+    },
+    requestLoan: {
+      prepare(amount, purpose) {
+        return { payload: { amount, purpose } };
+      },
+      reducer(state, action) {
+        state.loan = action.payload.amount;
+        state.balance = Number(state.balance) + Number(action.payload.amount);
+        state.purpose = action.payload.purpose;
+        state.isLoading = false;
+      },
+    },
+  },
+});
 // export default function accountReducer(state = initialStateAccount, action) {
 //   switch (action.type) {
 //     case "account/deposit":
