@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { deposit, payLoan, requestLoan, withdraw } from "./AccountSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,10 +12,16 @@ function AccountOperations() {
   const dispatch = useDispatch();
   const account = useSelector((store) => store.account);
 
-  function handleDeposit() {
+  useEffect(() => {
     if (!depositAmount) return;
+    if (depositAmount < 50) console.log("Deposit Amount must be more than 50");
+  }, [depositAmount]);
+
+  function handleDeposit() {
+    if (!depositAmount || depositAmount < 50) return;
     dispatch(deposit(depositAmount, currency));
     setDepositAmount("");
+    setCurrency("USD");
   }
 
   function handleWithdrawal() {
@@ -45,7 +51,6 @@ function AccountOperations() {
           <input
             type="number"
             value={depositAmount}
-            step={2}
             onChange={(e) => setDepositAmount(+e.target.value)}
           />
           <select
