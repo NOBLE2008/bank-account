@@ -29,6 +29,13 @@ const accountSlice = createSlice({
         state.isLoading = false;
       },
     },
+    payLoan(state, action){
+      if(state.balance < state.loan) return
+      state.balance -= state.loan
+      state.loan = 0
+      state.loanPurpose = ""
+      state.isLoading = false
+    }
   },
 });
 // export default function accountReducer(state = initialStateAccount, action) {
